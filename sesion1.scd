@@ -52,21 +52,26 @@ variable global: a
 Help.gui
 
 // Programando como Función
-{LFTri.ar(500,0,0.5)}.play
-{Saw.ar(200,0.2)!2}.play
-{Pulse.ar(60,0.5,0.2)!2}.play
-{Pulse.ar(MouseX.kr(20,60),0.5,0.2)!2}.play
+{LFTri.ar(500,0,0.5)}.play;
+
+{Saw.ar(200,0.2)!2}.play;
+
+{Pulse.ar(60,0.5,0.2)!2}.play;
+
+{Pulse.ar(MouseX.kr(20,60),0.5,0.2)!2}.play;
 
 // Visualizamos la onda con la ayuda de scope
-{LFTri.ar(500,0,0.5)}.scope
-{Pulse.ar(MouseX.kr(20,60),MouseY.kr(0.01,0.5),0.2)!2}.scope
-{SinOsc.ar(MouseX.kr(100,1000),0,0.2)!2}.scope
+{LFTri.ar(500,0,0.5)}.scope;
+
+{Pulse.ar(MouseX.kr(20,60),MouseY.kr(0.01,0.5),0.2)!2}.scope;
+
+{SinOsc.ar(MouseX.kr(100,1000),0,0.2)!2}.scope;
 
 // diferencia entre ar y kr
 ar son mensajes de audio: señal
 kr son mensajes de control: modulación
 
-// UGens - Ondas y Ruidos
+// UGens - Ondas y Ruidos, puedes sustituirlos en los ejemplos anteriores
 LFTri
 SinOsc
 Pulse
@@ -77,63 +82,87 @@ PinkNoise
 // Moduladores
 LFCub
 LFSaw
-LFNoise0
+LFNoise0, LFNoise1, LFNoise2
 
-{SinOsc.ar(300,0,0.5)*LFNoise0.ar(3)!2}.play
+{SinOsc.ar(300,0,0.5) * LFNoise0.ar(3)!2}.play;
 
 // argumentos externos y variables
-a=10;
+a=10; // variable globa a es igual a 10
+
 a
-a={SinOsc.ar(300,0,0.5)*LFNoise0.ar(3)!2}
+
+a={SinOsc.ar(300,0,0.5)*LFNoise0.ar(3)!2}; // variable global a es igual a una función
+
 a.play
 
-a={|imp=3|SinOsc.ar(300,0,0.5)*LFNoise0.ar(imp)!2}.play
-a.set(\imp,4)
+a={|imp=3|SinOsc.ar(300,0,0.5)*LFNoise0.ar(imp)!2}.play; // variable global a es igua a una función
 
-b={|imp=3,frec=300|SinOsc.ar(frec,0,0.2)*LFNoise0.ar(imp)!2}.play
-b.set(\imp,8,\frec,500)
+a.set(\imp,4); // mensaje .set dice: variable a cambia el valor del argumento \imp
 
-// Ejemplos con envolvente
+b={|imp=3,frec=300|SinOsc.ar(frec,0,0.2)*LFNoise0.ar(imp)!2}.play; // ahora con dos argumentos
+
+b.set(\imp,8, \frec,500); // cambia el valor de dos argumentos a la vez
+
+// Ejemplos con envolvente (lo que hace que el sonido dure un tiempo determinado)
 
 // Line como envolvente
-{Pulse.ar(MouseX.kr(20,60),MouseY.kr(0.01,0.5),0.2)*Line.kr(1,0,0.4,doneAction:2)!2}.play
+{Pulse.ar(MouseX.kr(20,60),MouseY.kr(0.01,0.5),0.2)*Line.kr(1,0,0.4,doneAction:2)!2}.play;
 
-//Envolvente percusivo
-{Pulse.ar(10,0.5,0.2)*EnvGen.kr(Env.perc(0.1,0.4),doneAction:2)!2}.play
+// EnvGen como envolvente percusivo
+{Pulse.ar(10,0.5,0.2)*EnvGen.kr(Env.perc(0.1,0.4),doneAction:2)!2}.play;
 
-// Modificar código mientras corre con Ndef
+// Modificar código mientras corre con Ndef, declara linea por linea
+// Pon play al Ndef, luego corre la segunda linea, ya que esta sonando cambia los valores internos y sin parar el sonido vuelve a declar la segunda linea de código
 
-Ndef(\uno).play
-Ndef(\uno,{LFTri.ar(250,0,0.25)!2});
-Ndef(\uno).stop
+// ejemplo uno
+Ndef(\uno).play; // inica el la definición de nodo (node definition = Ndef)
 
-Ndef(\uno).fadeTime=2
+Ndef(\uno,{LFTri.ar(250, 0, 0.25)!2}); // esto es lo que suena en el nodo
 
-Ndef(\dos).play
-Ndef(\dos,{|frec=300|LFTri.ar(frec,0,0.3)!2})
-Ndef(\dos).set(\frec,400);
+Ndef(\uno).fadeTime=2; // crea un desvanecimiento entre valores
 
-// secuencias con Tdef
-Tdef(\y,{"hola".postln})
-Tdef(\y).play
+Ndef(\uno).stop; // para la actividad del nodo
 
-Tdef(\y,{10.do{"hola".postln}})
+// ejemplo dos, corre linea por linea
+Ndef(\dos).play;
 
-Tdef(\y,{20.do{"hola".scramble.postln;0.25.wait}})
+// esta liena la puedes modificar varias veces si parar el programa, cada cabmio o cabios que realices vuelvela a declarar
+Ndef(\dos,{|frec=300|LFTri.ar(frec,0,0.3)!2});
 
-// con sonido
+Ndef(\dos).set(\frec,400); // manda un mensaje desde afuera
 
-// prendo Ndef(\tres) sin no esta sonando
-Ndef(\tres).play
-Ndef(\tres,{|frec=300|LFTri.ar(frec,0,0.3)!3})
+Ndef(\dos).stop; // para
 
-Tdef(\frec,{100.do{Ndef(\tres).set(\frec,100.rrand(200));0.125.wait}});
-Tdef(\frec).play
+// Secuencias con Tdef (tasl definition) o definición de tarea
+// declara linea por linea, observa la ventana post
+Tdef(\y,{"hola".postln});
 
-// apago Ndef(\tres)
-Ndef(\tres).stop
+Tdef(\y).play;
 
-// ejemplos de secuencias con Tdef
+Tdef(\y,{10.do{"hola".postln}});
+
+Tdef(\y,{20.do{"hola".scramble.postln;0.25.wait}});
+
+// Tdef con sonido producido por Ndef
+
+// ejemplo tres ------------------------------------------------------
+// prendo Ndef(\tres) sin no esta sonando, declara liena por linea
+Ndef(\tres).play; // prende el Ndef
+
+Ndef(\tres,{|frec=300|LFTri.ar(frec,0,0.3)!3}); // suena el Ndef sin variar
+
+Tdef(\frec,{100.do{Ndef(\tres).set(\frec,100.rrand(200));0.125.wait}}); // asigno la tarea de cambiar nota
+
+Tdef(\frec).play; // prendo la tarea para cambiar nota
+
+Ndef(\tres).stop; // deja de sonar
+
+// Ejemplos de secuencias con Tdef
+// ejemplo uno, requiere del Ndef anterior
+
+Ndef(\tres,{|frec=300|LFTri.ar(frec,0,0.3)!3}); // declara esta linea primero
+
+// luego selecciona todo este código y delcarlo, se prende y apaga solo
 (
 Tdef(\frec,{
 1.do{Ndef(\tres).play;0.5};
@@ -142,30 +171,39 @@ Tdef(\frec,{
 });
 );
 
-(// parentesis encapsulan código
-Ndef(\cuatro,{|frec=200,pwm=0.1,amp=0.5|Pulse.ar(frec,pwm,amp)!2}); // declaro el Ndef
+// ejemplo dos Ndef y Tdef al mismo tiempo
 
+Ndef(\cuatro,{|frec=200,pwm=0.1,amp=0.5|Pulse.ar(frec,pwm,amp)!2}); // declara esta linea
+
+// delclara to el código siguiente, todo lo que esta entre parentesis
+(
 Tdef(\secuencia,{
 	1.do{Ndef(\cuatro).play;0.5.wait}; // activo el Ndef y espero 0.5 segundos
 	100.do{Ndef(\cuatro).set(\frec,200.rrand(800),\pwd,0.1.rrand(0.5),\amp,0.1.rrand(0.5));0.125.wait}; // le mando diversos mensajes aleatorios
 	1.do{Ndef(\cuatro).stop;0.1.wait} // apago el ndef
 })
-)
+);
 
 // control
-Tdef(\secuencia).play
-Tdef(\secuencia).stop
+Tdef(\secuencia).play // prendo la secuencia
+Tdef(\secuencia).stop // apago la secuencia
 
-// notas midi y envolvente
+// ejemplo tres
+// Notas midi y envolvente, declara linea por linea
 
-Ndef(\cinco).play
+Ndef(\cinco).play;
+
 Ndef(\cinco,{|frec=60,vol=0.5,at=0.01,rel=0.7|Saw.ar(frec,vol)*EnvGen.kr(Env.perc(at,rel),doneAction:2)!2});
-Ndef(\cinco).spawn
-Ndef(\cinco).spawn([\frec,62])
-Ndef(\cinco).spawn([\frec,62.midicps]) // con midicps la frecuencia 62 se convierte en re
 
-Tdef(\midi).play
+Ndef(\cinco).spawn; // vuelve a generar sonido
 
+Ndef(\cinco).spawn([\frec,62]); // cambia la frecuencia 62 herzt
+
+Ndef(\cinco).spawn([\frec,62.midicps]); // con midicps la frecuencia 62 se convierte en la nota midi RE
+
+Tdef(\midi).play; // prendo por adelantado la rutina
+
+// declaro todo el código entre parentesis, suena 5 notas
 (
 Tdef(\midi,{
 4.do{Ndef(\cinco).spawn([\frec,[60,62,64,65].choose.midicps]);0.125.wait};
@@ -173,7 +211,7 @@ Tdef(\midi,{
 })
 );
 
-// en loop
+// delcarlo el código entre parentesis, debe sonra porque el Tdef midi esta activo
 (
 Tdef(\midi,{
 loop{
@@ -183,25 +221,68 @@ loop{
 })
 );
 
-// usando todas los argumentos de entrada
+Tdef(\midi).stop // para apagar el Tdef
+
+// último ejemplo
+// usando todas los argumentos de entrada;
+
+Tdef(\midi2).play; // prendo nuevamente la tarea
+
+// declaro todo el código entre parentesis, si no suena quiza necesitas volver a declarar el Ndef(\cinco) que esta arriba
+
+// modifica los valores que quieras y sin parar vuelve a delcarar todo el código entre parentesis
+// esto es una forma de hacer LiveCoding
 (
-Tdef(\midi,{
+Tdef(\midi2,{
 loop{
-1.do{Ndef(\cinco).spawn([\frec,60.midicps,\vol,0.2,\at,0.05,\rel,0.1]);0.5.wait};
-1.do{Ndef(\cinco).spawn([\frec,64.midicps,\vol,0.2,\at,0.05,\rel,0.3]);0.5.wait};
-1.do{Ndef(\cinco).spawn([\frec,67.midicps,\vol,0.2,\at,0.05,\rel,0.2]);0.5.wait};
-1.do{Ndef(\cinco).spawn([\frec,72.midicps,\vol,0.2,\at,0.05,\rel,0.9]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,[60,72].choose.midicps,\vol,0.3,\at,0.05,\rel,0.9]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,62.midicps,\vol,0.35,\at,0.05,\rel,0.25]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,65.midicps,\vol,0.6,\at,0.05,\rel,1.1]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,71.midicps,\vol,0.2,\at,0.05,\rel,0.2]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,69.midicps,\vol,0.3,\at,0.05,\rel,0.2]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,64.midicps,\vol,0.35,\at,0.05,\rel,0.25]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,67.midicps,\vol,0.6,\at,0.05,\rel,1.1]);0.1.wait};
+1.do{Ndef(\cinco).spawn([\frec,71.midicps,\vol,0.2,\at,0.05,\rel,1.2]);0.1.wait};
 }
 });
 )
 
-// Grabando el resultado
-s.makeGui;
-thisProcess.platform.recordingsDir;
-thisProcess.platform.recordingsDir=("/home/hernani/Escritorio/");
-s.recHeaderFormat="WAV";
-s.recSampleFormat="int16";
+// version escala akebono japonesa [62,64,65,69,70] = re,mi,fa,la,si-bemol
+(
+Tdef(\midi2,{
+loop{
+1.do{Ndef(\cinco).spawn([\frec,[62,74].choose.midicps,\vol,0.3,\at,0.05,\rel,2]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,65.midicps,\vol,0.4,\at,0.05,\rel,2]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,64.midicps,\vol,0.5,\at,0.05,\rel,2]);1.wait};
+1.do{Ndef(\cinco).spawn([\frec,70.midicps,\vol,0.2,\at,0.05,\rel,2]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,69.midicps,\vol,0.3,\at,0.05,\rel,2]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,64.midicps,\vol,0.5,\at,0.05,\rel,2]);1.wait};
+1.do{Ndef(\cinco).spawn([\frec,70.midicps,\vol,0.2,\at,0.05,\rel,2]);0.5.wait};
+1.do{Ndef(\cinco).spawn([\frec,64.midicps,\vol,0.5,\at,0.05,\rel,1.5]);0.5.wait};
+}
+});
+)
 
-// Cómo guardar mi documento
+Tdef(\midi2).stop;
+
+60.midicps = DO
+62.midicps = RE
+64.midicps = MI
+65.midicps = FA
+67.midicps = SOL
+69.midicps = LA
+71.midicps = SI
+72.midicps = DO
+
+// Grabando el resultado
+s.makeGui; // se abre la venta localhost server
+thisProcess.platform.recordingsDir; // te dice donde se guardaran tus sonidos
+thisProcess.platform.recordingsDir=("/home/hernani/Escritorio/"); // tu le dices donde los quieres guardar
+s.recHeaderFormat="WAV"; // cambia el formato a wav
+s.recSampleFormat="int16"; // a 16 bits de resolución
+
+// en la ventana localhost server hay un botón que dice recodr>, si lo presionas cambia a stop[] y comienza a grabar, para parar la grabación presionas stop[] y el sonido lo buscas en la ruta que le indicaste
+
+// Cómo guardar mi documento de supercollider
 // Lo más conveniente es guardarlo con la extensión scd
 // supercollider document, esto no s asegura que podremos abrirlo en otras plataformas
