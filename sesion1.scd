@@ -284,5 +284,5 @@ s.recSampleFormat="int16"; // a 16 bits de resolución
 // en la ventana localhost server hay un botón que dice recodr>, si lo presionas cambia a stop[] y comienza a grabar, para parar la grabación presionas stop[] y el sonido lo buscas en la ruta que le indicaste
 
 // Cómo guardar mi documento de supercollider
-// Lo más conveniente es guardarlo con la extensión scd
-// supercollider document, esto no s asegura que podremos abrirlo en otras plataformas
+// Lo más conveniente es guardarlo con la extensión scd (SuperCollider Document)
+// Esto nos asegura que podremos abrirlo en distintas plataformas
