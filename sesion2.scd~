@@ -1,0 +1,28 @@
+// =====================================================================
+// SuperCollider - Laboratorio de Musica Libre, Rancho Electrónico
+// Sesion2 - Agosto 2015
+// =====================================================================
+
+s.boot;
+
+// SynthDef es la definición de un sintetizador
+// Formas de onda básicas  ruido
+
+// Sine
+(
+SynthDef(\sin,{||
+var sen, pan, env;
+sen=SinOsc.ar
+pan
+env
+Out.ar(0, pan*env);
+}).add
+)
+
+// Triangular
+
+// Cuadrada
+
+// Diente de sierra
+
+// Ruido blanco
